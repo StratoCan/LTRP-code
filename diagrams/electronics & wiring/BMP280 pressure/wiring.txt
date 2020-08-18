@@ -1,0 +1,6 @@
+VCC - (COLOR) ->
+GND - (COLOR) ->
+SCL - (COLOR) -> A5
+SDA -(COLOR) ->A4
+
+i2c adress -> 
