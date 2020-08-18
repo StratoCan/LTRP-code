@@ -1,0 +1,7 @@
+VCC - RED-> GND
+GND - BLACK-> GND
+SCL - YELLOW -> A5
+SDA - ORANGE -> A4
+XDA - XXXXXX 
+XCL - XXXXXX 
+INT - BLUE -> digital 2
