@@ -46,9 +46,6 @@ struct STRUCT {
 	float yaw;
 	float pitch;
 	float roll;
-	float aaX;
-	float aaY;
-	float aaZ;
 	String err;
 } data;
 
