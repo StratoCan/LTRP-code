@@ -15,6 +15,7 @@
 #define DHTpin 5
 #define BMP280addr (0x76) // adresa BMP280
 #define MPUint 3
+#define MPU6050addr (0x68) //adresa MPU6050
 
 SerialTransfer Transfer;
 DHT dht(DHTpin, DHT11);
