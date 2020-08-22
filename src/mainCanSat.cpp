@@ -1,17 +1,32 @@
-//code for ONLY LRTP (can)
+// openCanSat code
+// www.stratocan.eu
 
+#include <Arduino.h>
+#include <Wire.h>
+#include <SerialTransfer.h>
+
+#define BAUDRATE 115200
+
+SerialTransfer Transfer;
+
+struct STRUCT {
+	long randomak;
+} data;
 
 void setup() {
-  // put your setup code here, to run once:
-
+	SerialUSB.begin(BAUDRATE);
+	Serial5.begin(BAUDRATE);
+	Transfer.begin(Serial5);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+	if(Transfer.available()) {
+		Transfer.rxObj(data);
+		SerialUSB.println(data.randomak);
+	}
 }
 
-
+/*
 //SEQUENCES
 
 void startUpSequence(){
@@ -43,3 +58,4 @@ void hiberanate(){
 
 //ROUTINES AND SUBSEQUENCES END
 
+*/

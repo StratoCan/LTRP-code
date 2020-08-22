@@ -1,14 +1,34 @@
-#include <Arduino.h>
+// LTRP Code
+// www.stratocan.eu
 
-int led = 13;
+#include <Arduino.h>
+#include <Wire.h>
+#include <SerialTransfer.h>
+
+#define BAUDRATE 115200
+#define OCSADDR 9 // openCanSat address
+
+SerialTransfer Transfer;
+
+int builtInLed = 13;
+
+struct STRUCT {
+	long randomak;
+} data;
 
 void setup() {
-	pinMode(led, OUTPUT);
+	pinMode(builtInLed, OUTPUT);
+
+	Serial.begin(BAUDRATE);
+	Transfer.begin(Serial);
+
+	// wait for serial
+	//while(!Serial);
 }
 
 void loop() {
-	digitalWrite(led, HIGH);
-	delay(500);
-	digitalWrite(led, LOW);
+	data.randomak = random(10);
+
+	Transfer.sendDatum(data);
 	delay(500);
 }
