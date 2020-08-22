@@ -208,9 +208,9 @@ void setup() {
   mpu.setXGyroOffset(51);
   mpu.setYGyroOffset(8);
   mpu.setZGyroOffset(21);
-  mpu.setXAccelOffset(1150);
+  /*mpu.setXAccelOffset(1150);
   mpu.setYAccelOffset(-50);
-  mpu.setZAccelOffset(1060);
+  mpu.setZAccelOffset(1060);*/
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // Calibration Time: generate offsets and calibrate our MPU6050

@@ -37,7 +37,7 @@ void setup() {
 
 	Serial.begin(BAUDRATE);
 	Wire.begin();
-	Wire.setClock(400000);
+	//Wire.setClock(400000);
 	mpu.initialize();
 	devStatus = mpu.dmpInitialize();
 

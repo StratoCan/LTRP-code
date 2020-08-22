@@ -30,10 +30,7 @@ uint16_t fifoCount;     // count of all bytes currently in FIFO
 uint8_t fifoBuffer[64]; // FIFO storage buffer
 // MPU orientation/motion vars
 Quaternion q;           // [w, x, y, z]         quaternion container
-VectorInt16 aa;         // [x, y, z]            accel sensor measurements
 VectorInt16 gy;         // [x, y, z]            gyro sensor measurements
-VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
-VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
@@ -68,6 +65,7 @@ void setup() {
 	Wire.begin();
 	Wire.setClock(400000);
 	dht.begin();
+	bmp.begin(BMP280addr);
 	mpu.initialize();
 	devStatus = mpu.dmpInitialize();
 
@@ -116,15 +114,6 @@ void loop() {
 		data.yaw = ypr[0] * 180 / M_PI;
 		data.pitch = ypr[1] * 180 / M_PI;
 		data.roll = ypr[2] * 180 / M_PI;
-		// accel
-		mpu.dmpGetQuaternion(&q, fifoBuffer);
-		mpu.dmpGetAccel(&aa, fifoBuffer);
-		mpu.dmpGetGravity(&gravity, &q);
-		mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-		mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-		data.aaX = aaWorld.x;
-		data.aaY = aaWorld.y;
-		data.aaZ = aaWorld.z;
 	}
 
 	Transfer.sendDatum(data);
