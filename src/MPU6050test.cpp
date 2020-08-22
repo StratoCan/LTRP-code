@@ -1,24 +1,14 @@
-// LTRP Code
+// MPU6050 test
 // www.stratocan.eu
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <SerialTransfer.h>
-#include <DHT.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BMP280.h>
 #include <I2Cdev.h>
 #include <MPU6050_6Axis_MotionApps_V6_12.h>
 
 #define BAUDRATE 115200
-#define builtInLED 13
-#define DHTpin 5
-#define BMP280addr (0x76) // adresa BMP280
 #define MPUint 3
 
-SerialTransfer Transfer;
-DHT dht(DHTpin, DHT11);
-Adafruit_BMP280 bmp;
 MPU6050 mpu;
 
 // MPU control/status vars
@@ -37,37 +27,17 @@ VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measure
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
-int bmpKorekce = 32;
-
-struct STRUCT {
-	float DHTtemp;
-	float DHThum;
-	float BMPtemp;
-	float BMPpress;
-	float BMPalt;
-	float yaw;
-	float pitch;
-	float roll;
-	float aaX;
-	float aaY;
-	float aaZ;
-	String err;
-} data;
-
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
 void dmpDataReady() {
 	mpuInterrupt = true;
 }
 
 void setup() {
-	pinMode(builtInLED, OUTPUT);
 	pinMode(MPUint, INPUT);
 
 	Serial.begin(BAUDRATE);
-	Transfer.begin(Serial);
 	Wire.begin();
 	Wire.setClock(400000);
-	dht.begin();
 	mpu.initialize();
 	devStatus = mpu.dmpInitialize();
 
@@ -93,18 +63,12 @@ void setup() {
 		packetSize = mpu.dmpGetFIFOPacketSize();
 	}
 	else {
-		data.err = "Gyro fucked up: " + devStatus;
+		Serial.print("GYRO ERROR: ");
+		Serial.println(devStatus);
 	}
 }
 
 void loop() {
-	// reading ze senzorů
-	data.DHTtemp = dht.readTemperature();
-	data.DHThum = dht.readHumidity();
-	data.BMPtemp = bmp.readTemperature();
-	data.BMPpress = (bmp.readPressure()/100.00) + bmpKorekce;
-	data.BMPalt = bmp.readAltitude();
-
 	// GYRO + ACCEL
 	if (!dmpReady) return; // pokud se něco posralo tak nic nezkoušet
 	// přečtení packetu z FIFO
@@ -113,20 +77,24 @@ void loop() {
 		mpu.dmpGetQuaternion(&q, fifoBuffer);
 		mpu.dmpGetGravity(&gravity, &q);
 		mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-		data.yaw = ypr[0] * 180 / M_PI;
-		data.pitch = ypr[1] * 180 / M_PI;
-		data.roll = ypr[2] * 180 / M_PI;
+		Serial.print("yaw: ");
+		Serial.println(ypr[0] * 180 / M_PI);
+		Serial.print("pitch: ");
+		Serial.println(ypr[1] * 180 / M_PI);
+		Serial.print("roll: ");
+		Serial.println(ypr[2] * 180 / M_PI);
 		// accel
 		mpu.dmpGetQuaternion(&q, fifoBuffer);
 		mpu.dmpGetAccel(&aa, fifoBuffer);
 		mpu.dmpGetGravity(&gravity, &q);
 		mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
 		mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-		data.aaX = aaWorld.x;
-		data.aaY = aaWorld.y;
-		data.aaZ = aaWorld.z;
+		Serial.print("aaX: ");
+		Serial.println(aaWorld.x);
+		Serial.print("aaY: ");
+		Serial.println(aaWorld.y);
+		Serial.print("aaZ: ");
+		Serial.println(aaWorld.z);
 	}
-
-	Transfer.sendDatum(data);
 	delay(1000);
 }
