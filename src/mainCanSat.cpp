@@ -42,6 +42,7 @@ struct STRUCT {
 
 struct STRUCT {
 	int id;
+	int16_t rssi;
 	float DHTtemp;
 	float DHThum;
 	float BMPtemp;
@@ -50,12 +51,14 @@ struct STRUCT {
 	float BMEtemp;
 	float BMEpress;
 	float BMEalt;
+	float BMEhum;
 	float yaw;
 	float pitch;
 	float roll;
 } dataOut;
 
 int id = 1;
+bool isRadioOk = true;
 
 void printData() {
 	SerialUSB.print("DHTtemp: ");
@@ -113,9 +116,13 @@ void setup() {
 	Serial5.begin(BAUDRATE);
 	Transfer.begin(Serial5);
 	bme.begin(BME280addr);
-	radio.initialize(FREQUENCY, nodeID, networkID);
-	radio.setFrequency(FREQUENCYSPEC);
-	radio.setHighPower(true);
+	if(!radio.initialize(FREQUENCY, nodeID, networkID)) {
+		isRadioOk = false;
+	}
+	else {
+		radio.setFrequency(FREQUENCYSPEC);
+		radio.setHighPower(true);
+	}
 }
 
 void loop() {
@@ -124,10 +131,21 @@ void loop() {
 		dataOut.id = id;
 		Transfer.rxObj(data);
 		readData();
+		id++;
 	}
+
+	// RFM69
+	dataOut.rssi = 0;
+	if (isRadioOk) {
+		dataOut.rssi = radio.RSSI;
+		radio.send(toNodeID, (const void*)&dataOut, sizeof(dataOut));
+		digitalWrite(D13LED, HIGH);
+		delay(250);
+	}
+
 	digitalWrite(D13LED, LOW);
 
-	delay(1000);
+	delay(250);
 }
 
 /*
