@@ -10,12 +10,12 @@
 #include <I2Cdev.h>
 #include <MPU6050_6Axis_MotionApps_V6_12.h>
 
-#define BAUDRATE 115200
-#define builtInLED 13
-#define DHTpin 5
-#define BMP280addr (0x76) // adresa BMP280
-#define MPUint 3
-#define MPU6050addr (0x68) //adresa MPU6050
+#define BAUDRATE			115200
+#define builtInLED		13
+#define DHTpin				5
+#define MPUint				3
+#define BMP280addr		(0x76) // adresa BMP280
+#define seaLevelPress	1013.25
 
 SerialTransfer Transfer;
 DHT dht(DHTpin, DHT11);
@@ -98,8 +98,8 @@ void loop() {
 	data.DHTtemp = dht.readTemperature();
 	data.DHThum = dht.readHumidity();
 	data.BMPtemp = bmp.readTemperature();
-	data.BMPpress = (bmp.readPressure()/100.00) + bmpKorekce;
-	data.BMPalt = bmp.readAltitude();
+	data.BMPpress = (bmp.readPressure() / 100.0F) + bmpKorekce;
+	data.BMPalt = bmp.readAltitude(seaLevelPress);
 
 	// GYRO + ACCEL
 	if (!dmpReady) return; // pokud se něco posralo tak nic nezkoušet
@@ -115,5 +115,5 @@ void loop() {
 	}
 
 	Transfer.sendDatum(data);
-	delay(1000);
+	delay(500);
 }
