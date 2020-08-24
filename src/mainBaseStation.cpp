@@ -23,6 +23,10 @@
 #define RFM69pin			43
 #define RFM69int			9
 
+#ifndef UCG_INTERRUPT_SAFE
+#define UCG_INTERRUPT_SAFE
+#endif
+
 bool isRadioOk = true;
 uint8_t screenNum = 1;
 
@@ -32,8 +36,12 @@ OcsGraphics ocsDesign(ucg);
 OcsStorage ocsData(ocsDesign);
 OcsStorage::message income;
 
+void printData() {
+	SerialUSB.println("," + String(income.id) + "," + String(income.DHTtemp) + "," + String(income.DHThum) + "," + String(income.BMPtemp) + "," + String(income.BMPpress) + "," + String(income.BMPalt) + "," + String(income.BMEtemp) + "," + String(income.BMEpress) + "," + String(income.BMEalt) + "," + String(income.BMEhum) + "," + String(income.yaw) + "," + String(income.pitch) + "," + String(income.roll));
+}
+
 void setup() {
-	Serial.begin(BAUDRATE);
+	SerialUSB.begin(BAUDRATE);
 	// screen
 	ucg.begin(UCG_FONT_MODE_TRANSPARENT);
 	ucg.clearScreen();
@@ -51,6 +59,8 @@ void setup() {
 		radio.setFrequency(FREQUENCYSPEC);
 		radio.setHighPower(true); // Always use this for RFM69HW
 	}
+	// neprintne to for no reason
+	//SerialUSB.println("\"time\",\"id\",\"DHTtemp\",\"DHThum\",\"BMPtemp\",\"BMPpress\",\"BMPalt\",\"BMEtemp\",\"BMEpress\",\"BMEalt\",\"BMEhum\",\"yaw\",\"pitch\",\"roll\"");
 }
 
 void loop() {
@@ -92,8 +102,9 @@ void loop() {
 
 	// radio
 	if (radio.receiveDone()) {
-	income = *(OcsStorage::message*)radio.DATA;
-	ocsData.Update(income, screenNum);
-	delay(300);
+		income = *(OcsStorage::message*)radio.DATA;
+		printData();
+		ocsData.Update(income, screenNum);
+		delay(300);
 	}
 }
