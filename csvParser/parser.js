@@ -23,12 +23,14 @@
 				//rawData(1) array is stored as object, dunno why,should be array of rows, according to papa parse
 				actualData = Array.from(rawData[index]);
 				console.log(actualData);
-			/*	for(var i = 0; i < actualData.length; i++){ 
-					
-				}*/
+
+				for(var i = 0; i < actualData.length; i++){ 
+					finalData[i] = new DATA(actualData[0],actualData[1],actualData[2],actualData[3],actualData[4],actualData[5],actualData[6],actualData[7],actualData[8],actualData[9],actualData[10],actualData[11],actualData[12],actualData[13]);
+				}
 
 			}
 			console.log(finalData);
+			console.table(finalData);
 		  }
 		});
 	}
@@ -38,7 +40,7 @@
 
 	function DATA(id, time, DHTtemp, DHThum, BMPtemp, BMPpress, BMPalt, BMEtemp, BMEpress, BMEalt, BMEhum, yaw, pitch, roll){
 		this.id = id;
-		this.time = time;
+		this.time= time;
 		this.DHTtemp = DHTtemp;
 		this.DHThum = DHThum;
 		this.BMPtemp = BMPtemp;
