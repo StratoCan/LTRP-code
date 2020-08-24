@@ -16,7 +16,7 @@
 #define nodeID				1
 #define toNodeID			2
 #define FREQUENCY			RF69_433MHZ
-#define FREQUENCYSPEC	433000000
+#define FREQUENCYSPEC	433300000
 #define RFM69pin			43
 #define RFM69int			9
 
@@ -40,7 +40,7 @@ struct STRUCT {
 	String err;
 } data;
 
-struct STRUCT {
+struct STRUCT2 {
 	int id;
 	int16_t rssi;
 	float DHTtemp;
