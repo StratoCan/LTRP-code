@@ -140,12 +140,10 @@ void loop() {
 		dataOut.rssi = radio.RSSI;
 		radio.send(toNodeID, (const void*)&dataOut, sizeof(dataOut));
 		digitalWrite(D13LED, HIGH);
-		delay(250);
+		delay(500);
 	}
 
 	digitalWrite(D13LED, LOW);
-
-	delay(250);
 }
 
 /*
