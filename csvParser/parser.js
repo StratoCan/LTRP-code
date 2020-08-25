@@ -2,9 +2,11 @@
  var data;//idk premade variable
 
  var rawData;
- var actualData;
- var finalData = {};
  var datalog;
+ var tempData;
+
+ var final;
+
 	 
 	function handleFileSelect(evt) {
 		var file = evt.target.files[0];
@@ -15,25 +17,19 @@
 		  complete: function(results) {
 			console.log("FINISHED PARSING!", results.data);
 			//console.table(results.data);
-			rawData = results.data;
-
-			//iterate thru result.data Array (which each element is array(1) as well)
-			for (let index = 0; index < rawData.length; index++) {
-				//console.log(rawData[index]);
-				//rawData(1) array is stored as object, dunno why,should be array of rows, according to papa parse
-				actualData = Array.from(rawData[index]);
-				console.log(actualData);
-
-				for(var i = 0; i < actualData.length; i++){ 
-					finalData[i] = new DATA(actualData[0],actualData[1],actualData[2],actualData[3],actualData[4],actualData[5],actualData[6],actualData[7],actualData[8],actualData[9],actualData[10],actualData[11],actualData[12],actualData[13]);
-				}
-
-			}
-			console.log(finalData);
-			console.table(finalData);
+			rawData = Array.from(results.data);
+			//iterate thru all the data
+				for (let index = 0; index < rawData.length; index++) {
+					//iterate thru row values 
+					for (let i = 0; i < array.length; i++) {
+						
+					}
+				}	
+				//console.log(final);
 		  }
 		});
 	}
+	
 
 	//DATA, ERRORS ->  ARRAY OF FUCKEN ARRAYS
 	//META -> OBJECT

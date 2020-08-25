@@ -103,8 +103,10 @@ void loop() {
 	// radio
 	if (radio.receiveDone()) {
 		income = *(OcsStorage::message*)radio.DATA;
-		printData();
-		ocsData.Update(income, screenNum);
+		if (income.BMPtemp != 0) {
+			printData();
+			ocsData.Update(income, screenNum);
+		}
 		delay(300);
 	}
 }
